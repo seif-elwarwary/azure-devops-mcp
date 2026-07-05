@@ -2,7 +2,18 @@
 // Licensed under the MIT License.
 
 import { AlertType, AlertValidityStatus, Confidence, Severity, State } from "azure-devops-node-api/interfaces/AlertInterfaces";
-import { createEnumMapping, encodeFormattedValue, extractAdoStreamError, getEnumKeys, getOrgFromUrl, mapStringArrayToEnum, mapStringToEnum, safeEnumConvert } from "../../src/utils";
+import {
+  createEnumMapping,
+  encodeFormattedValue,
+  extractAdoStreamError,
+  getAlmSearchBaseUrl,
+  getEnumKeys,
+  getOrgFromUrl,
+  getVsspsBaseUrl,
+  mapStringArrayToEnum,
+  mapStringToEnum,
+  safeEnumConvert,
+} from "../../src/utils";
 
 describe("utils", () => {
   describe("createEnumMapping", () => {
@@ -553,5 +564,36 @@ describe("getOrgFromUrl", () => {
   it("returns null when no org segment is present", () => {
     expect(getOrgFromUrl("https://dev.azure.com/")).toBeNull();
     expect(getOrgFromUrl("https://dev.azure.com")).toBeNull();
+  });
+});
+
+describe("getAlmSearchBaseUrl", () => {
+  it("uses the dedicated almsearch host for the hosted service", () => {
+    expect(getAlmSearchBaseUrl("https://dev.azure.com/contoso")).toBe("https://almsearch.dev.azure.com/contoso");
+    expect(getAlmSearchBaseUrl("https://dev.azure.com/contoso/")).toBe("https://almsearch.dev.azure.com/contoso");
+  });
+
+  it("uses the almsearch subdomain for legacy visualstudio.com URLs", () => {
+    expect(getAlmSearchBaseUrl("https://contoso.visualstudio.com")).toBe("https://contoso.almsearch.visualstudio.com");
+  });
+
+  it("returns the collection URL unchanged for on-premises servers", () => {
+    expect(getAlmSearchBaseUrl("https://ado.contoso.com/DefaultCollection")).toBe("https://ado.contoso.com/DefaultCollection");
+    expect(getAlmSearchBaseUrl("https://ado.contoso.com:8080/tfs/DefaultCollection/")).toBe("https://ado.contoso.com:8080/tfs/DefaultCollection");
+  });
+});
+
+describe("getVsspsBaseUrl", () => {
+  it("uses the dedicated vssps host for the hosted service", () => {
+    expect(getVsspsBaseUrl("https://dev.azure.com/contoso")).toBe("https://vssps.dev.azure.com/contoso");
+  });
+
+  it("uses the vssps subdomain for legacy visualstudio.com URLs", () => {
+    expect(getVsspsBaseUrl("https://contoso.visualstudio.com")).toBe("https://contoso.vssps.visualstudio.com");
+  });
+
+  it("returns the collection URL unchanged for on-premises servers", () => {
+    expect(getVsspsBaseUrl("https://ado.contoso.com/DefaultCollection")).toBe("https://ado.contoso.com/DefaultCollection");
+    expect(getVsspsBaseUrl("https://ado.contoso.com:8080/tfs/DefaultCollection/")).toBe("https://ado.contoso.com:8080/tfs/DefaultCollection");
   });
 });

@@ -128,6 +128,63 @@ export function getOrgFromUrl(url: string): string | null {
 }
 
 /**
+ * Builds the base URL for the Azure DevOps Search (almsearch) REST APIs.
+ *
+ * On the hosted service the Search APIs live on a dedicated `almsearch` host.
+ * On-premises Azure DevOps Server exposes the Search extension under the same
+ * collection URL as every other REST API, so the collection URL is returned
+ * unchanged (minus any trailing slash).
+ *
+ * @param orgUrl The organization URL (hosted) or collection URL (on-premises).
+ * @returns The base URL to prefix `_apis/search/...` requests with.
+ */
+export function getAlmSearchBaseUrl(orgUrl: string): string {
+  try {
+    const u = new URL(orgUrl);
+    const host = u.hostname.toLowerCase();
+    if (host === "dev.azure.com" || host.endsWith(".dev.azure.com")) {
+      const org = u.pathname.split("/").filter(Boolean)[0] ?? "";
+      return `https://almsearch.dev.azure.com/${org}`;
+    }
+    if (host.endsWith(".visualstudio.com")) {
+      return `${u.protocol}//${host.replace(".visualstudio.com", ".almsearch.visualstudio.com")}`;
+    }
+  } catch {
+    // Not a parseable URL — fall through to the on-premises behavior below.
+  }
+  // On-premises Azure DevOps Server: search is served from the collection URL.
+  return orgUrl.replace(/\/+$/, "");
+}
+
+/**
+ * Builds the base URL for the Azure DevOps Identity (vssps) REST APIs.
+ *
+ * Mirrors {@link getAlmSearchBaseUrl}: the hosted service uses a dedicated
+ * `vssps` host while on-premises servers expose identities under the
+ * collection URL.
+ *
+ * @param serverUrl The organization URL (hosted) or collection URL (on-premises).
+ * @returns The base URL to prefix `_apis/identities` requests with.
+ */
+export function getVsspsBaseUrl(serverUrl: string): string {
+  try {
+    const u = new URL(serverUrl);
+    const host = u.hostname.toLowerCase();
+    if (host === "dev.azure.com" || host.endsWith(".dev.azure.com")) {
+      const org = u.pathname.split("/").filter(Boolean)[0] ?? "";
+      return `https://vssps.dev.azure.com/${org}`;
+    }
+    if (host.endsWith(".visualstudio.com")) {
+      return `${u.protocol}//${host.replace(".visualstudio.com", ".vssps.visualstudio.com")}`;
+    }
+  } catch {
+    // Not a parseable URL — fall through to the on-premises behavior below.
+  }
+  // On-premises Azure DevOps Server: identities are served from the collection URL.
+  return serverUrl.replace(/\/+$/, "");
+}
+
+/**
  * Convert a Node.js ReadableStream to a string.
  * Shared utility for consistent stream handling across tools.
  */

@@ -14,12 +14,13 @@ This project provides Azure DevOps MCP tooling for AI agents, with a **remote-fi
 3. [🚀 Remote MCP Server (Recommended)](#-remote-mcp-server-recommended)
 4. [⚙️ Supported Tools](#️-supported-tools)
 5. [🔌 Local MCP Server Installation (Optional)](#-local-mcp-server-installation-optional)
-6. [🌏 Using Domains (local)](#-using-domains-local)
-7. [🐥 Project and Team Defaults (local)](#-project-and-team-defaults-local)
-8. [📝 Troubleshooting](#-troubleshooting)
-9. [🎩 Examples & Best Practices](#-examples--best-practices)
-10. [🙋‍♀️ Frequently Asked Questions](#️-frequently-asked-questions)
-11. [📌 Contributing](#-contributing)
+6. [🏢 On-Premises Azure DevOps Server (local)](#-on-premises-azure-devops-server-local)
+7. [🌏 Using Domains (local)](#-using-domains-local)
+8. [🐥 Project and Team Defaults (local)](#-project-and-team-defaults-local)
+9. [📝 Troubleshooting](#-troubleshooting)
+10. [🎩 Examples & Best Practices](#-examples--best-practices)
+11. [🙋‍♀️ Frequently Asked Questions](#️-frequently-asked-questions)
+12. [📌 Contributing](#-contributing)
 
 ## 📺 Overview
 
@@ -166,6 +167,79 @@ Open GitHub Copilot Chat and try a prompt like `List ADO projects`. The first ti
 > To start, just include "`This project uses Azure DevOps. Always check to see if the Azure DevOps MCP server has a tool relevant to the user's request`" in your copilot instructions file.
 
 See the [getting started documentation](./docs/GETTINGSTARTED.md) to use our MCP Server with other tools such as Visual Studio 2022, Codex, Claude Code, and Cursor.
+
+## 🏢 On-Premises Azure DevOps Server (local)
+
+The local MCP Server can connect to an on-premises **Azure DevOps Server 2022 or later** in addition to the hosted `dev.azure.com` service. Instead of an organization name, pass the **full collection URL** of your server — for example `https://ado.contoso.com/DefaultCollection` (or `https://ado.contoso.com:8080/tfs/DefaultCollection` for a default IIS configuration).
+
+When a full URL is supplied, the server:
+
+- Uses that URL as-is instead of `https://dev.azure.com/<organization>`.
+- Skips the Microsoft Entra tenant lookup, which only applies to the hosted service.
+- Defaults authentication to **Personal Access Token (`pat`)**, because interactive and Azure CLI sign-in acquire Entra ID tokens that on-premises servers do not accept. You can still pass `--authentication` explicitly to override this.
+
+> [!NOTE]
+> `pat` and `envvar` are the supported authentication methods for on-premises servers. Create a token from your server's **User settings → Personal access tokens**.
+
+### Install from the repository
+
+Because on-premises support may run ahead of the published npm package, install and build the server directly from source:
+
+```sh
+# 1. Clone the repository
+git clone https://github.com/microsoft/azure-devops-mcp.git
+cd azure-devops-mcp
+
+# 2. Install dependencies and build (produces dist/index.js)
+npm install
+npm run build
+```
+
+`npm install` builds the project automatically; re-run `npm run build` after pulling new changes.
+
+### Configure `.vscode/mcp.json` for Azure DevOps Server 2022+
+
+Point the client at your locally built `dist/index.js` and pass your collection URL. Replace `/absolute/path/to/azure-devops-mcp` with the folder you cloned into, and enter your collection URL when prompted:
+
+```json
+{
+  "inputs": [
+    {
+      "id": "ado_collection_url",
+      "type": "promptString",
+      "description": "Azure DevOps Server collection URL (e.g. 'https://ado.contoso.com/DefaultCollection')"
+    }
+  ],
+  "servers": {
+    "ado-onprem": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["/absolute/path/to/azure-devops-mcp/dist/index.js", "${input:ado_collection_url}", "--authentication", "pat"],
+      "env": {
+        "PERSONAL_ACCESS_TOKEN": "<base64encoded email:pat>"
+      }
+    }
+  }
+}
+```
+
+The `PERSONAL_ACCESS_TOKEN` value must be the base64 encoding of `<email>:<pat>`, where `<email>` is any non-empty string (only the token portion is used) and `<pat>` is the raw token you created on your server. For example:
+
+```sh
+# macOS / Linux
+printf 'user@contoso.com:<your-pat>' | base64
+
+# Windows PowerShell
+[Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes('user@contoso.com:<your-pat>'))
+```
+
+> [!TIP]
+> Prefer supplying `PERSONAL_ACCESS_TOKEN` from your environment or a secrets manager rather than committing it to `mcp.json`. See the [PAT authentication guide](./docs/GETTINGSTARTED.md#-personal-access-token-pat) for details.
+
+Save the file, start the `ado-onprem` server from the MCP view in VS Code, then try a prompt like `List ADO projects`.
+
+> [!NOTE]
+> Some tools depend on optional server features. The code, wiki, work item, and commit search tools require the [Code Search extension](https://learn.microsoft.com/en-us/azure/devops/project/search/get-started-search) to be installed on your Azure DevOps Server; without it the `search_*` tools return an error.
 
 ## 🌏 Using Domains (local)
 

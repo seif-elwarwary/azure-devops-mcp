@@ -15,6 +15,7 @@ import { getOrgTenant } from "./org-tenants.js";
 //import { configurePrompts } from "./prompts.js";
 import { configureAllTools } from "./tools.js";
 import { UserAgentComposer } from "./useragent.js";
+import { getAlmSearchBaseUrl } from "./utils.js";
 import { packageVersion } from "./version.js";
 import { DomainsManager } from "./shared/domains.js";
 
@@ -31,7 +32,8 @@ const argv = yargs(hideBin(process.argv))
   .version(packageVersion)
   .command("$0 <organization> [options]", "Azure DevOps MCP Server", (yargs) => {
     yargs.positional("organization", {
-      describe: "Azure DevOps organization name",
+      describe:
+        "Azure DevOps organization name for the hosted service (e.g. 'contoso'), or the full collection URL for an on-premises Azure DevOps Server 2022+ / TFS instance (e.g. 'https://ado.contoso.com/DefaultCollection')",
       type: "string",
       demandOption: true,
     });
@@ -58,8 +60,44 @@ const argv = yargs(hideBin(process.argv))
   .help()
   .parseSync();
 
-export const orgName = argv.organization as string;
-const orgUrl = "https://dev.azure.com/" + orgName;
+/**
+ * Resolves the positional `organization` argument into a base URL and name.
+ *
+ * A bare organization name (e.g. `contoso`) targets the hosted Azure DevOps
+ * service at `https://dev.azure.com/{organization}`. A full URL (e.g.
+ * `https://ado.contoso.com/DefaultCollection`) targets an on-premises Azure
+ * DevOps Server 2022+ / TFS collection and is used as-is.
+ */
+function resolveOrganization(organization: string): { orgName: string; orgUrl: string; isOnPremises: boolean } {
+  if (/^https?:\/\//i.test(organization)) {
+    const orgUrl = organization.replace(/\/+$/, "");
+    let orgName = orgUrl;
+    try {
+      const segments = new URL(orgUrl).pathname.split("/").filter(Boolean);
+      if (segments.length > 0) {
+        orgName = segments[segments.length - 1];
+      }
+    } catch {
+      // Leave orgName as the full URL when it cannot be parsed.
+    }
+    return { orgName, orgUrl, isOnPremises: true };
+  }
+  return { orgName: organization, orgUrl: `https://dev.azure.com/${organization}`, isOnPremises: false };
+}
+
+const resolvedOrg = resolveOrganization((argv.organization as string).trim());
+export const orgName = resolvedOrg.orgName;
+export const orgUrl = resolvedOrg.orgUrl;
+export const isOnPremises = resolvedOrg.isOnPremises;
+// Base URL for the Azure DevOps Search (almsearch) REST APIs. On the hosted
+// service this is a dedicated host; on-premises it is the collection URL.
+export const searchOrgUrl = getAlmSearchBaseUrl(orgUrl);
+
+// Interactive and Azure CLI authentication acquire Entra ID tokens, which
+// on-premises servers do not accept. Default on-prem to PAT authentication
+// unless the user explicitly selected an authentication method.
+const authExplicitlySet = hideBin(process.argv).some((arg) => arg === "-a" || arg === "--authentication" || arg.startsWith("-a=") || arg.startsWith("--authentication="));
+const authenticationType = isOnPremises && !authExplicitlySet ? "pat" : (argv.authentication as string);
 
 const domainsManager = new DomainsManager(argv.domains);
 export const enabledDomains = domainsManager.getEnabledDomains();
@@ -83,7 +121,8 @@ async function main() {
   logger.info("Starting Azure DevOps MCP Server", {
     organization: orgName,
     organizationUrl: orgUrl,
-    authentication: argv.authentication,
+    isOnPremises: isOnPremises,
+    authentication: authenticationType,
     tenant: argv.tenant,
     domains: argv.domains,
     enabledDomains: Array.from(enabledDomains),
@@ -105,10 +144,12 @@ async function main() {
   server.server.oninitialized = () => {
     userAgentComposer.appendMcpClientInfo(server.server.getClientVersion());
   };
-  const tenantId = (await getOrgTenant(orgName)) ?? argv.tenant;
-  const authenticator = createAuthenticator(argv.authentication, tenantId);
+  // The tenant lookup queries the hosted Entra discovery endpoint, which does
+  // not apply to on-premises servers — skip it and honor any explicit tenant.
+  const tenantId = isOnPremises ? argv.tenant : ((await getOrgTenant(orgName)) ?? argv.tenant);
+  const authenticator = createAuthenticator(authenticationType, tenantId);
 
-  if (argv.authentication === "pat") {
+  if (authenticationType === "pat") {
     const basicValue = await authenticator();
     // basicValue is already base64("{email}:{token}") — use it directly in the Authorization header
     const _originalFetch = globalThis.fetch;
@@ -128,7 +169,7 @@ async function main() {
   // removing prompts until further notice
   // configurePrompts(server);
 
-  configureAllTools(server, authenticator, getAzureDevOpsClient(authenticator, userAgentComposer, argv.authentication), () => userAgentComposer.userAgent, enabledDomains);
+  configureAllTools(server, authenticator, getAzureDevOpsClient(authenticator, userAgentComposer, authenticationType), () => userAgentComposer.userAgent, enabledDomains);
 
   const transport = new StdioServerTransport();
   await server.connect(transport);
