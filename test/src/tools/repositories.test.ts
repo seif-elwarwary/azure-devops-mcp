@@ -14,7 +14,7 @@ jest.mock("../../../src/tools/auth", () => ({
 }));
 
 // Mock index.js to avoid yargs CLI parsing at import time
-jest.mock("../../../src/index", () => ({ orgName: "test-org" }));
+jest.mock("../../../src/index", () => ({ orgName: "test-org", searchOrgUrl: "https://almsearch.dev.azure.com/test-org" }));
 
 const mockGetCurrentUserDetails = getCurrentUserDetails as jest.MockedFunction<typeof getCurrentUserDetails>;
 const mockGetUserIdFromEmail = getUserIdFromEmail as jest.MockedFunction<typeof getUserIdFromEmail>;
