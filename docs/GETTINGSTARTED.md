@@ -412,6 +412,30 @@ claude mcp add azure-devops -- npx -y @azure-devops/mcp Contoso
 
 Replace `Contoso` with your own organization name
 
+#### On-premises Azure DevOps Server 2022+
+
+On-premises collections are not covered by the published npm package flow, so point Claude Code at your locally built `dist/index.js` (see [Install from the repository](../README.md#install-from-the-repository)) and pass the collection URL instead of an organization name. Everything after `--` is the server command line:
+
+```bash
+claude mcp add ado-onprem \
+  --env PERSONAL_ACCESS_TOKEN="$(printf 'user@contoso.com:<your-pat>' | base64)" \
+  -- node /absolute/path/to/azure-devops-mcp/dist/index.js https://ado.contoso.com/DefaultCollection --authentication pat
+```
+
+Replace the path, collection URL, and PAT with your own values. Notes:
+
+- `PERSONAL_ACCESS_TOKEN` must be the base64 encoding of `<email>:<pat>` — see [Personal Access Token (PAT)](#-personal-access-token-pat).
+- `--authentication pat` is the default for on-premises collection URLs and can be omitted; `envvar` is the other supported on-prem method.
+- Add `-s user` to make the server available in every project rather than only the current one.
+
+Confirm the registration with `claude mcp list`:
+
+```text
+ado-onprem: node /absolute/path/to/azure-devops-mcp/dist/index.js https://ado.contoso.com/DefaultCollection --authentication pat - ✔ Connected
+```
+
+Then try a read-only prompt such as `List ADO projects`. If the server shows as failed, run `claude mcp get ado-onprem` and check [troubleshooting](./TROUBLESHOOTING.md).
+
 ### ✴️ Using MCP Server with Claude Desktop
 
 Open Claude Desktop and navigate to **File > Settings > Developer**. Click **Edit Config**.

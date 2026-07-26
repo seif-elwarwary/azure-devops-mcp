@@ -238,6 +238,20 @@ printf 'user@contoso.com:<your-pat>' | base64
 
 Save the file, start the `ado-onprem` server from the MCP view in VS Code, then try a prompt like `List ADO projects`.
 
+### Add the on-premises server to Claude Code via the CLI
+
+Claude Code registers the same command through `claude mcp add`. Everything after `--` is the server command line, so the collection URL and flags are passed exactly as above:
+
+```sh
+claude mcp add ado-onprem \
+  --env PERSONAL_ACCESS_TOKEN="$(printf 'user@contoso.com:<your-pat>' | base64)" \
+  -- node /absolute/path/to/azure-devops-mcp/dist/index.js https://ado.contoso.com/DefaultCollection --authentication pat
+```
+
+Add `-s user` to register the server for every project instead of only the current one. Verify the connection with `claude mcp list`, which reports the server as `✔ Connected` once it starts.
+
+See the [Claude Code section of the getting started guide](./docs/GETTINGSTARTED.md#-using-mcp-server-with-claude-code) for the hosted-service equivalent.
+
 > [!NOTE]
 > Some tools depend on optional server features. The code, wiki, work item, and commit search tools require the [Code Search extension](https://learn.microsoft.com/en-us/azure/devops/project/search/get-started-search) to be installed on your Azure DevOps Server; without it the `search_*` tools return an error.
 
