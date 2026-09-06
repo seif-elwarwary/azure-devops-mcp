@@ -84,6 +84,25 @@ This page lists all available tools provided by the local Azure DevOps MCP serve
 | [repo_pull_request_thread_write](#repo_pull_request_thread_write) | `update`           | Update an existing comment in a thread                              |
 | [repo_pull_request_thread_write](#repo_pull_request_thread_write) | `update_status`    | Update the status of a comment thread                               |
 | [repo_create_branch](#repo_create_branch)                         |                    | Create a branch                                                     |
+| [repo_repository_write](#repo_repository_write)                   | `create`           | Create a repository                                                 |
+| [repo_repository_write](#repo_repository_write)                   | `update`           | Rename or (de)activate a repository                                 |
+| [repo_repository_write](#repo_repository_write)                   | `delete`           | Soft-delete a repository to the recycle bin                         |
+| [repo_repository_write](#repo_repository_write)                   | `restore`          | Restore a repository from the recycle bin                           |
+| [repo_recycle_bin](#repo_recycle_bin)                             | `list`             | List soft-deleted repositories in a project                         |
+| [repo_recycle_bin](#repo_recycle_bin)                             | `delete`           | Permanently delete a repository from the recycle bin                |
+| [repo_tag](#repo_tag)                                             | `list`             | List tags in a repository                                           |
+| [repo_tag](#repo_tag)                                             | `get`              | Get a single tag by name                                            |
+| [repo_tag_write](#repo_tag_write)                                 | `create`           | Create a lightweight or annotated tag                               |
+| [repo_tag_write](#repo_tag_write)                                 | `delete`           | Delete a tag                                                        |
+| [repo_commit_diff](#repo_commit_diff)                             |                    | Compare two branches, tags, or commits                              |
+| [repo_file_diff](#repo_file_diff)                                 |                    | Get line-level diffs for specific files between two commits         |
+| [repo_push](#repo_push)                                           |                    | Commit file changes directly to a branch                            |
+| [policy](#policy)                                                 | `list_types`       | List available branch/repository policy types                       |
+| [policy](#policy)                                                 | `list`             | List policy configurations                                          |
+| [policy](#policy)                                                 | `get`              | Get a single policy configuration                                   |
+| [policy_write](#policy_write)                                     | `create`           | Create a policy configuration                                       |
+| [policy_write](#policy_write)                                     | `update`           | Update a policy configuration                                       |
+| [policy_write](#policy_write)                                     | `delete`           | Delete a policy configuration                                       |
 
 ### Pipelines
 
