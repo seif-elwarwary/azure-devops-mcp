@@ -198,6 +198,16 @@ This page lists all available tools provided by the local Azure DevOps MCP serve
 | [agent_queue_write](#agent_queue_write)           | `create` | Create an agent queue referencing a pool |
 | [agent_queue_write](#agent_queue_write)           | `delete` | Delete an agent queue                    |
 
+> **Note:** `service_endpoint` / `service_endpoint_write` use the REST API directly (no SDK client is available for service connections).
+
+| Tool                                              | Action   | Description                           |
+| ------------------------------------------------- | -------- | ------------------------------------- |
+| [service_endpoint](#service_endpoint)             | `list`   | List service connections in a project |
+| [service_endpoint](#service_endpoint)             | `get`    | Get a service connection by ID        |
+| [service_endpoint_write](#service_endpoint_write) | `create` | Create a service connection           |
+| [service_endpoint_write](#service_endpoint_write) | `update` | Update a service connection           |
+| [service_endpoint_write](#service_endpoint_write) | `delete` | Delete a service connection           |
+
 ### Process
 
 | Tool                                                          | Action                 | Description                                |

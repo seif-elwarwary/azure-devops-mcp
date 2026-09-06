@@ -14,6 +14,7 @@ import { configureMcpAppsTools } from "./tools/mcp-apps.js";
 import { configurePipelineTools } from "./tools/pipelines.js";
 import { configureReleaseTools } from "./tools/release.js";
 import { configureDistributedTaskTools } from "./tools/distributedtask.js";
+import { configureServiceEndpointTools } from "./tools/service-endpoints.js";
 import { configureProcessTools } from "./tools/process.js";
 import { configureGraphTools } from "./tools/graph.js";
 import { configureCoreTools } from "./tools/core.js";
@@ -42,6 +43,7 @@ function configureAllTools(server: McpServer, tokenProvider: () => Promise<strin
   configureIfDomainEnabled(Domain.PIPELINES, () => configurePipelineTools(server, tokenProvider, connectionProvider, userAgentProvider));
   configureIfDomainEnabled(Domain.RELEASE, () => configureReleaseTools(server, tokenProvider, connectionProvider));
   configureIfDomainEnabled(Domain.DISTRIBUTED_TASK, () => configureDistributedTaskTools(server, tokenProvider, connectionProvider));
+  configureIfDomainEnabled(Domain.DISTRIBUTED_TASK, () => configureServiceEndpointTools(server, tokenProvider, connectionProvider, userAgentProvider));
   configureIfDomainEnabled(Domain.PROCESS, () => configureProcessTools(server, tokenProvider, connectionProvider));
   configureIfDomainEnabled(Domain.GRAPH, () => configureGraphTools(server, tokenProvider, connectionProvider, userAgentProvider));
   configureIfDomainEnabled(Domain.REPOSITORIES, () => configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider));
