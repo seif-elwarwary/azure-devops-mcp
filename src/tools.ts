@@ -20,6 +20,7 @@ import { configureTestPlanTools } from "./tools/test-plans.js";
 import { configureWikiTools } from "./tools/wiki.js";
 import { configureWorkTools } from "./tools/work.js";
 import { configureWorkItemTools } from "./tools/work-items.js";
+import { configureWorkItemsAdminTools } from "./tools/work-items-admin.js";
 
 function configureAllTools(server: McpServer, tokenProvider: () => Promise<string>, connectionProvider: () => Promise<WebApi>, userAgentProvider: () => string, enabledDomains: Set<string>) {
   const configureIfDomainEnabled = (domain: string, configureFn: () => void) => {
@@ -37,6 +38,7 @@ function configureAllTools(server: McpServer, tokenProvider: () => Promise<strin
   configureIfDomainEnabled(Domain.REPOSITORIES, () => configureGitAdminTools(server, tokenProvider, connectionProvider));
   configureIfDomainEnabled(Domain.REPOSITORIES, () => configurePolicyTools(server, tokenProvider, connectionProvider));
   configureIfDomainEnabled(Domain.WORK_ITEMS, () => configureWorkItemTools(server, tokenProvider, connectionProvider, userAgentProvider));
+  configureIfDomainEnabled(Domain.WORK_ITEMS, () => configureWorkItemsAdminTools(server, tokenProvider, connectionProvider));
   configureIfDomainEnabled(Domain.WIKI, () => configureWikiTools(server, tokenProvider, connectionProvider, userAgentProvider));
   configureIfDomainEnabled(Domain.TEST_PLANS, () => configureTestPlanTools(server, tokenProvider, connectionProvider, userAgentProvider));
   configureIfDomainEnabled(Domain.SEARCH, () => configureSearchTools(server, tokenProvider, connectionProvider, userAgentProvider));

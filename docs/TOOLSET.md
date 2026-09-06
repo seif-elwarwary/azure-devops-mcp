@@ -55,6 +55,21 @@ This page lists all available tools provided by the local Azure DevOps MCP serve
 | [wit_backlog](#wit_backlog)                                 | `list_work_items`      | Get work items in a specific backlog level                              |
 | [wit_backlog](#wit_backlog)                                 | `reorder`              | Reorder work items in a backlog or iteration                            |
 | [wit_work_item_attachment](#wit_work_item_attachment)       |                        | Download a work item attachment; save locally or return as base64       |
+| [wit_area](#wit_area)                                       |                        | Get the area path tree for a project                                    |
+| [wit_area_write](#wit_area_write)                           | `create`               | Create an area path                                                     |
+| [wit_area_write](#wit_area_write)                           | `update`               | Rename an area path                                                     |
+| [wit_area_write](#wit_area_write)                           | `delete`               | Delete an area path                                                     |
+| [wit_tag](#wit_tag)                                         | `list`                 | List tags in a project                                                  |
+| [wit_tag](#wit_tag)                                         | `get`                  | Get a single tag by ID or name                                          |
+| [wit_tag_write](#wit_tag_write)                             | `update`               | Rename a tag                                                            |
+| [wit_tag_write](#wit_tag_write)                             | `delete`               | Delete a tag                                                            |
+| [wit_query_write](#wit_query_write)                         | `create`               | Create a query or query folder                                          |
+| [wit_query_write](#wit_query_write)                         | `update`               | Update a query or folder                                                |
+| [wit_query_write](#wit_query_write)                         | `delete`               | Delete a query or folder                                                |
+| [wit_attachment_write](#wit_attachment_write)               |                        | Upload a file as a work item attachment, optionally linking it          |
+| [wit_recycle_bin](#wit_recycle_bin)                         |                        | List deleted work items in a project                                    |
+| [wit_recycle_bin_write](#wit_recycle_bin_write)             | `restore`              | Restore a deleted work item                                             |
+| [wit_recycle_bin_write](#wit_recycle_bin_write)             | `destroy`              | Permanently delete a work item                                          |
 
 ### Repositories
 
