@@ -209,7 +209,7 @@ Save the file, start the `ado-onprem` server from the MCP view in VS Code, then 
 
 ## Using Domains (Local Server)
 
-The local server includes many tools. Domains let you load only the tool groups you need, which keeps the tool list manageable and helps clients with tool limits. Available domains are `core`, `work`, `work-items`, `search`, `test-plans`, `repositories`, `wiki`, `pipelines`, and `advanced-security`.
+The local server includes many tools. Domains let you load only the tool groups you need, which keeps the tool list manageable and helps clients with tool limits. Available domains are `core`, `admin`, `work`, `work-items`, `search`, `test-plans`, `repositories`, `wiki`, `pipelines`, `release`, `distributedtask`, `process`, `graph`, `service-hooks`, `feeds`, `security`, and `advanced-security` (hosted only; automatically skipped on-premises).
 
 Add `-d` followed by the domains to the server arguments. For example, this configuration loads only work item-related tools:
 

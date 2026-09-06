@@ -306,6 +306,19 @@ This page lists all available tools provided by the local Azure DevOps MCP serve
 | [feed_write](#feed_write) | `update`        | Update a feed            |
 | [feed_write](#feed_write) | `delete`        | Delete a feed            |
 
+### Security
+
+> **Note:** Uses the Security REST API directly (no SDK client is available for general ACLs). Permission bit values are namespace-specific; use `security_namespace` (list) to discover the namespace ID and its action bits for a resource type before calling the write or check tools.
+
+| Tool                                        | Action   | Description                                                    |
+| ------------------------------------------- | -------- | -------------------------------------------------------------- |
+| [security_namespace](#security_namespace)   | `list`   | List security namespaces and their permission bits             |
+| [security_namespace](#security_namespace)   | `get`    | Get a security namespace by ID                                 |
+| [security_acl](#security_acl)               |          | Get the access control list for a token                        |
+| [security_acl_write](#security_acl_write)   | `set`    | Set access control entries for a token                         |
+| [security_acl_write](#security_acl_write)   | `remove` | Remove access control entries (or the whole ACL) for a token   |
+| [security_permission](#security_permission) |          | Check whether the current user has given permissions on tokens |
+
 ### Advanced Security
 
 | Tool                                                                  | Description                                              |

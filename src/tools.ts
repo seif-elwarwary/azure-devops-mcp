@@ -19,6 +19,7 @@ import { configureProcessTools } from "./tools/process.js";
 import { configureGraphTools } from "./tools/graph.js";
 import { configureServiceHookTools } from "./tools/service-hooks.js";
 import { configureFeedTools } from "./tools/feeds.js";
+import { configureSecurityTools } from "./tools/security.js";
 import { configureCoreTools } from "./tools/core.js";
 import { configureGitAdminTools } from "./tools/git-admin.js";
 import { configurePolicyTools } from "./tools/policies.js";
@@ -50,6 +51,7 @@ function configureAllTools(server: McpServer, tokenProvider: () => Promise<strin
   configureIfDomainEnabled(Domain.GRAPH, () => configureGraphTools(server, tokenProvider, connectionProvider, userAgentProvider));
   configureIfDomainEnabled(Domain.SERVICE_HOOKS, () => configureServiceHookTools(server, tokenProvider, connectionProvider, userAgentProvider));
   configureIfDomainEnabled(Domain.FEEDS, () => configureFeedTools(server, tokenProvider, connectionProvider, userAgentProvider));
+  configureIfDomainEnabled(Domain.SECURITY, () => configureSecurityTools(server, tokenProvider, connectionProvider, userAgentProvider));
   configureIfDomainEnabled(Domain.REPOSITORIES, () => configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider));
   configureIfDomainEnabled(Domain.REPOSITORIES, () => configureGitAdminTools(server, tokenProvider, connectionProvider));
   configureIfDomainEnabled(Domain.REPOSITORIES, () => configurePolicyTools(server, tokenProvider, connectionProvider));
