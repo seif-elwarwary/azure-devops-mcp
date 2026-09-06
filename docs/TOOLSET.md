@@ -152,6 +152,22 @@ This page lists all available tools provided by the local Azure DevOps MCP serve
 | [pipelines_write](#pipelines_write)           | `rename_pipeline`    | Rename an existing pipeline definition              |
 | [pipelines_write](#pipelines_write)           | `update_build_stage` | Cancel, retry, or run a stage on an in-flight build |
 
+### Release
+
+| Tool                                                  | Action        | Description                                 |
+| ----------------------------------------------------- | ------------- | ------------------------------------------- |
+| [release_definition](#release_definition)             | `list`        | List classic Release definitions            |
+| [release_definition](#release_definition)             | `get`         | Get a Release definition by ID              |
+| [release_definition](#release_definition)             | `get_history` | Get a Release definition's revision history |
+| [release_definition_write](#release_definition_write) | `create`      | Create a Release definition                 |
+| [release_definition_write](#release_definition_write) | `update`      | Update a Release definition                 |
+| [release_definition_write](#release_definition_write) | `delete`      | Delete a Release definition                 |
+| [release_definition_write](#release_definition_write) | `undelete`    | Restore a deleted Release definition        |
+| [release](#release)                                   | `list`        | List Releases                               |
+| [release](#release)                                   | `get`         | Get a Release by ID                         |
+| [release_write](#release_write)                       | `create`      | Deploy a new Release from a definition      |
+| [release_write](#release_write)                       | `abandon`     | Abandon a Release                           |
+
 ### Test Plans
 
 > **Note:** The test plan tools are being aligned with the [Azure DevOps remote MCP server](https://learn.microsoft.com/en-us/azure/devops/mcp-server/remote-mcp-server?view=azure-devops#test-plans) tool structure.
