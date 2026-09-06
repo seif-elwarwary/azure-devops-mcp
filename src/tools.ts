@@ -17,6 +17,7 @@ import { configureDistributedTaskTools } from "./tools/distributedtask.js";
 import { configureServiceEndpointTools } from "./tools/service-endpoints.js";
 import { configureProcessTools } from "./tools/process.js";
 import { configureGraphTools } from "./tools/graph.js";
+import { configureServiceHookTools } from "./tools/service-hooks.js";
 import { configureCoreTools } from "./tools/core.js";
 import { configureGitAdminTools } from "./tools/git-admin.js";
 import { configurePolicyTools } from "./tools/policies.js";
@@ -46,6 +47,7 @@ function configureAllTools(server: McpServer, tokenProvider: () => Promise<strin
   configureIfDomainEnabled(Domain.DISTRIBUTED_TASK, () => configureServiceEndpointTools(server, tokenProvider, connectionProvider, userAgentProvider));
   configureIfDomainEnabled(Domain.PROCESS, () => configureProcessTools(server, tokenProvider, connectionProvider));
   configureIfDomainEnabled(Domain.GRAPH, () => configureGraphTools(server, tokenProvider, connectionProvider, userAgentProvider));
+  configureIfDomainEnabled(Domain.SERVICE_HOOKS, () => configureServiceHookTools(server, tokenProvider, connectionProvider, userAgentProvider));
   configureIfDomainEnabled(Domain.REPOSITORIES, () => configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider));
   configureIfDomainEnabled(Domain.REPOSITORIES, () => configureGitAdminTools(server, tokenProvider, connectionProvider));
   configureIfDomainEnabled(Domain.REPOSITORIES, () => configurePolicyTools(server, tokenProvider, connectionProvider));

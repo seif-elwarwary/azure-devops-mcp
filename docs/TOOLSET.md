@@ -278,6 +278,20 @@ This page lists all available tools provided by the local Azure DevOps MCP serve
 | [mcp_ado_search_wiki](#mcp_ado_search_wiki)         | Search wiki pages by keywords         |
 | [mcp_ado_search_workitem](#mcp_ado_search_workitem) | Search work items by text and filters |
 
+### Service Hooks
+
+> **Note:** Uses the REST API directly (no SDK client is available for it).
+
+| Tool                                      | Action               | Description                      |
+| ----------------------------------------- | -------------------- | -------------------------------- |
+| [service_hook](#service_hook)             | `list_publishers`    | List available event publishers  |
+| [service_hook](#service_hook)             | `list_event_types`   | List event types for a publisher |
+| [service_hook](#service_hook)             | `list_subscriptions` | List webhook subscriptions       |
+| [service_hook](#service_hook)             | `get_subscription`   | Get a subscription by ID         |
+| [service_hook_write](#service_hook_write) | `create`             | Create a subscription            |
+| [service_hook_write](#service_hook_write) | `update`             | Update a subscription            |
+| [service_hook_write](#service_hook_write) | `delete`             | Delete a subscription            |
+
 ### Advanced Security
 
 | Tool                                                                  | Description                                              |
