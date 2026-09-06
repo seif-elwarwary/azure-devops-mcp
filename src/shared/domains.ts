@@ -13,6 +13,7 @@ export enum Domain {
   RELEASE = "release",
   DISTRIBUTED_TASK = "distributedtask",
   PROCESS = "process",
+  GRAPH = "graph",
   CORE = "core",
   REPOSITORIES = "repositories",
   SEARCH = "search",

@@ -245,6 +245,21 @@ This page lists all available tools provided by the local Azure DevOps MCP serve
 | [wiki](#wiki)             | `get_page_content` | Retrieve wiki page content                   |
 | [wiki_upsert_page](#wiki) |                    | Create or update a wiki page                 |
 
+### Graph
+
+> **Note:** Uses the Graph REST API directly (no SDK client is available for it); requires Azure DevOps Server 2019+ or the hosted service.
+
+| Tool                                              | Action                       | Description                                  |
+| ------------------------------------------------- | ---------------------------- | -------------------------------------------- |
+| [graph_group](#graph_group)                       | `list`                       | List groups, optionally scoped to a project  |
+| [graph_group](#graph_group)                       | `get`                        | Get a group by descriptor                    |
+| [graph_group](#graph_group)                       | `list_memberships`           | List a subject's group memberships           |
+| [graph_group](#graph_group)                       | `resolve_project_descriptor` | Resolve a project ID to its Graph descriptor |
+| [graph_group_write](#graph_group_write)           | `create`                     | Create a group                               |
+| [graph_group_write](#graph_group_write)           | `delete`                     | Delete a group                               |
+| [graph_membership_write](#graph_membership_write) | `add`                        | Add a user/group as a member of a group      |
+| [graph_membership_write](#graph_membership_write) | `remove`                     | Remove a user/group from a group             |
+
 ### Search
 
 | Tool                                                | Description                           |
