@@ -8,6 +8,7 @@ import { WebApi } from "azure-devops-node-api";
 import { isOnPremises } from "./index.js";
 import { wrapExternalToolResponse } from "./shared/content-safety.js";
 import { Domain } from "./shared/domains.js";
+import { configureAdminTools } from "./tools/admin.js";
 import { configureAdvSecTools } from "./tools/advanced-security.js";
 import { configureMcpAppsTools } from "./tools/mcp-apps.js";
 import { configurePipelineTools } from "./tools/pipelines.js";
@@ -30,6 +31,7 @@ function configureAllTools(server: McpServer, tokenProvider: () => Promise<strin
   };
 
   configureIfDomainEnabled(Domain.CORE, () => configureCoreTools(server, tokenProvider, connectionProvider, userAgentProvider));
+  configureIfDomainEnabled(Domain.ADMIN, () => configureAdminTools(server, tokenProvider, connectionProvider));
   // This is a local health-check response and contains no Azure DevOps content.
   if (enabledDomains.has(Domain.MCP_APPS)) configureMcpAppsTools(server);
   configureIfDomainEnabled(Domain.WORK, () => configureWorkTools(server, tokenProvider, connectionProvider));

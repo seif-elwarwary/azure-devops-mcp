@@ -10,6 +10,17 @@ This page lists all available tools provided by the local Azure DevOps MCP serve
 | [mcp_ado_core_list_project_teams](#mcp_ado_core_list_project_teams) | List teams within a project            |
 | [mcp_ado_core_get_identity_ids](#mcp_ado_core_get_identity_ids)     | Retrieve identity IDs by search filter |
 
+### Admin
+
+| Tool                                      | Action   | Description                                |
+| ----------------------------------------- | -------- | ------------------------------------------ |
+| [core_project_write](#core_project_write) | `create` | Create a project (asynchronous)            |
+| [core_project_write](#core_project_write) | `update` | Rename/redescribe a project (asynchronous) |
+| [core_project_write](#core_project_write) | `delete` | Delete a project (asynchronous)            |
+| [core_team_write](#core_team_write)       | `create` | Create a team                              |
+| [core_team_write](#core_team_write)       | `update` | Rename/redescribe a team                   |
+| [core_team_write](#core_team_write)       | `delete` | Delete a team                              |
+
 ### Work
 
 > **Note:** The work tools are being aligned with the [Azure DevOps remote MCP server](https://learn.microsoft.com/en-us/azure/devops/mcp-server/remote-mcp-server?view=azure-devops#work) tool structure.
