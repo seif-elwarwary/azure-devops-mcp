@@ -14,6 +14,7 @@ import { configureMcpAppsTools } from "./tools/mcp-apps.js";
 import { configurePipelineTools } from "./tools/pipelines.js";
 import { configureReleaseTools } from "./tools/release.js";
 import { configureDistributedTaskTools } from "./tools/distributedtask.js";
+import { configureProcessTools } from "./tools/process.js";
 import { configureCoreTools } from "./tools/core.js";
 import { configureGitAdminTools } from "./tools/git-admin.js";
 import { configurePolicyTools } from "./tools/policies.js";
@@ -40,6 +41,7 @@ function configureAllTools(server: McpServer, tokenProvider: () => Promise<strin
   configureIfDomainEnabled(Domain.PIPELINES, () => configurePipelineTools(server, tokenProvider, connectionProvider, userAgentProvider));
   configureIfDomainEnabled(Domain.RELEASE, () => configureReleaseTools(server, tokenProvider, connectionProvider));
   configureIfDomainEnabled(Domain.DISTRIBUTED_TASK, () => configureDistributedTaskTools(server, tokenProvider, connectionProvider));
+  configureIfDomainEnabled(Domain.PROCESS, () => configureProcessTools(server, tokenProvider, connectionProvider));
   configureIfDomainEnabled(Domain.REPOSITORIES, () => configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider));
   configureIfDomainEnabled(Domain.REPOSITORIES, () => configureGitAdminTools(server, tokenProvider, connectionProvider));
   configureIfDomainEnabled(Domain.REPOSITORIES, () => configurePolicyTools(server, tokenProvider, connectionProvider));

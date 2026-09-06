@@ -198,6 +198,24 @@ This page lists all available tools provided by the local Azure DevOps MCP serve
 | [agent_queue_write](#agent_queue_write)           | `create` | Create an agent queue referencing a pool |
 | [agent_queue_write](#agent_queue_write)           | `delete` | Delete an agent queue                    |
 
+### Process
+
+| Tool                                                          | Action                 | Description                                |
+| ------------------------------------------------------------- | ---------------------- | ------------------------------------------ |
+| [process](#process)                                           | `list_processes`       | List process templates in the organization |
+| [process](#process)                                           | `get_process`          | Get a process template by ID               |
+| [process](#process)                                           | `list_work_item_types` | List work item types in a process          |
+| [process](#process)                                           | `get_work_item_type`   | Get a work item type by reference name     |
+| [process](#process)                                           | `list_states`          | List workflow states for a work item type  |
+| [process_work_item_type_write](#process_work_item_type_write) | `create`               | Create a work item type                    |
+| [process_work_item_type_write](#process_work_item_type_write) | `update`               | Update a work item type                    |
+| [process_work_item_type_write](#process_work_item_type_write) | `delete`               | Delete a work item type                    |
+| [process_field_write](#process_field_write)                   | `add`                  | Add a field to a work item type            |
+| [process_field_write](#process_field_write)                   | `update`               | Update a field on a work item type         |
+| [process_state_write](#process_state_write)                   | `create`               | Create a workflow state                    |
+| [process_state_write](#process_state_write)                   | `update`               | Update a workflow state                    |
+| [process_state_write](#process_state_write)                   | `delete`               | Delete a workflow state                    |
+
 ### Test Plans
 
 > **Note:** The test plan tools are being aligned with the [Azure DevOps remote MCP server](https://learn.microsoft.com/en-us/azure/devops/mcp-server/remote-mcp-server?view=azure-devops#test-plans) tool structure.
