@@ -3,10 +3,41 @@
 
 import { AzureCliCredential, ChainedTokenCredential, DefaultAzureCredential, TokenCredential } from "@azure/identity";
 import { AccountInfo, AuthenticationResult, PublicClientApplication } from "@azure/msal-node";
+import { NativeBrokerPlugin } from "@azure/msal-node-extensions";
 import open from "open";
 import { logger } from "./logger.js";
 
 const scopes = ["499b84ac-1321-427f-aa17-267ca6975798/.default"];
+
+const patAllowedHosts = new Set(["dev.azure.com", "vssps.dev.azure.com", "almsearch.dev.azure.com"]);
+
+function isPatAllowedHost(hostname: string): boolean {
+  const normalizedHostname = hostname.toLowerCase();
+  return patAllowedHosts.has(normalizedHostname) || normalizedHostname.endsWith(".visualstudio.com");
+}
+
+function installPatFetchInterceptor(basicValue: string): void {
+  const originalFetch = globalThis.fetch;
+  const patBearerValue = `Bearer ${basicValue}`;
+
+  globalThis.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
+    const headers = new Headers(init?.headers ?? (input instanceof Request ? input.headers : undefined));
+    if (headers.get("Authorization") !== patBearerValue) {
+      return originalFetch(input, init);
+    }
+
+    const requestUrl = new URL(input instanceof Request ? input.url : input.toString());
+    if (requestUrl.protocol !== "https:" || !isPatAllowedHost(requestUrl.hostname)) {
+      throw new Error(`Refusing to send a Personal Access Token to untrusted destination '${requestUrl.origin}'`);
+    }
+
+    headers.set("Authorization", `Basic ${basicValue}`);
+    if (input instanceof Request) {
+      return originalFetch(new Request(input, { ...init, headers }));
+    }
+    return originalFetch(input, { ...init, headers });
+  };
+}
 
 class OAuthAuthenticator {
   static clientId = "0d50963b-7bb9-4fe7-94c7-a99af00b5136";
@@ -15,6 +46,7 @@ class OAuthAuthenticator {
 
   private accountId: AccountInfo | null;
   private publicClientApp: PublicClientApplication;
+  private publicClientAppFallback: PublicClientApplication;
 
   constructor(tenantId?: string) {
     this.accountId = null;
@@ -28,6 +60,22 @@ class OAuthAuthenticator {
     }
 
     this.publicClientApp = new PublicClientApplication({
+      auth: {
+        clientId: OAuthAuthenticator.clientId,
+        authority,
+      },
+      broker: {
+        nativeBrokerPlugin: new NativeBrokerPlugin(),
+      },
+      system: {
+        loggerOptions: {
+          loggerCallback: (level, message) => {
+            logger.debug(`MSALClient[${level}]: ${message}`);
+          },
+        },
+      },
+    });
+    this.publicClientAppFallback = new PublicClientApplication({
       auth: {
         clientId: OAuthAuthenticator.clientId,
         authority,
@@ -55,18 +103,35 @@ class OAuthAuthenticator {
     }
     if (!authResult) {
       logger.debug(`OAuthAuthenticator: Starting interactive token acquisition`);
-      authResult = await this.publicClientApp.acquireTokenInteractive({
+      try {
+        authResult = await this.publicClientApp.acquireTokenInteractive({
+          scopes,
+          openBrowser: async (url) => {
+            logger.debug(`OAuthAuthenticator: Opening browser for authentication with target URL: ${url}`);
+            open(url);
+          },
+        });
+        this.accountId = authResult.account;
+        logger.debug(`OAuthAuthenticator: Successfully acquired token interactively, account cached`);
+      } catch (error) {
+        const msalErrorMessage = (error as any).platformBrokerError ? JSON.stringify((error as any).platformBrokerError) : "";
+        logger.debug(`OAuthAuthenticator: Interactive token acquisition failed: ${error instanceof Error ? error.message + msalErrorMessage : String(error)}`);
+        authResult = null;
+      }
+    }
+    if (!authResult) {
+      logger.debug(`OAuthAuthenticator: Starting interactive token acquisition without broker`);
+      authResult = await this.publicClientAppFallback.acquireTokenInteractive({
         scopes,
         openBrowser: async (url) => {
-          logger.debug(`OAuthAuthenticator: Opening browser for authentication`);
+          logger.debug(`OAuthAuthenticator: Opening browser for authentication with target URL: ${url}`);
           open(url);
         },
       });
-      this.accountId = authResult.account;
-      logger.debug(`OAuthAuthenticator: Successfully acquired token interactively, account cached`);
+      logger.debug(`OAuthAuthenticator: Successfully acquired token interactively without broker`);
     }
 
-    if (!authResult.accessToken) {
+    if (!authResult?.accessToken) {
       logger.error(`OAuthAuthenticator: Authentication result contains no access token`);
       throw new Error("Failed to obtain Azure DevOps OAuth token.");
     }
@@ -136,4 +201,4 @@ function createAuthenticator(type: string, tenantId?: string): () => Promise<str
       };
   }
 }
-export { createAuthenticator };
+export { createAuthenticator, installPatFetchInterceptor };
