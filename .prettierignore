@@ -4,3 +4,7 @@ dist/
 coverage/
 
 *.log*
+
+# Git symlink; Windows checkouts without symlink support materialize this as a
+# plain-text stub ("../mcp.json") instead of a real file, which is not valid JSON.
+.vscode/mcp.json

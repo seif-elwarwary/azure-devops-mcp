@@ -5,6 +5,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import { WebApi } from "azure-devops-node-api";
 
+import { isOnPremises } from "./index.js";
 import { wrapExternalToolResponse } from "./shared/content-safety.js";
 import { Domain } from "./shared/domains.js";
 import { configureAdvSecTools } from "./tools/advanced-security.js";
@@ -35,7 +36,8 @@ function configureAllTools(server: McpServer, tokenProvider: () => Promise<strin
   configureIfDomainEnabled(Domain.WIKI, () => configureWikiTools(server, tokenProvider, connectionProvider, userAgentProvider));
   configureIfDomainEnabled(Domain.TEST_PLANS, () => configureTestPlanTools(server, tokenProvider, connectionProvider, userAgentProvider));
   configureIfDomainEnabled(Domain.SEARCH, () => configureSearchTools(server, tokenProvider, connectionProvider, userAgentProvider));
-  configureIfDomainEnabled(Domain.ADVANCED_SECURITY, () => configureAdvSecTools(server, tokenProvider, connectionProvider));
+  // GitHub Advanced Security for Azure DevOps is a hosted-only feature; it does not exist on-premises.
+  if (!isOnPremises) configureIfDomainEnabled(Domain.ADVANCED_SECURITY, () => configureAdvSecTools(server, tokenProvider, connectionProvider));
 }
 
 /**

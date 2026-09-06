@@ -56,6 +56,12 @@ const argv = yargs(getCliArgs())
     describe: "Azure tenant ID (optional, applied when using 'interactive' and 'azcli' type of authentication)",
     type: "string",
   })
+  .option("on-premises", {
+    describe:
+      "Treat the connection as an on-premises Azure DevOps Server / TFS instance: skips the hosted Entra tenant lookup and defaults authentication to 'pat'. Pass --no-on-premises for a bare organization name that targets the hosted dev.azure.com service. Ignored (always on) when 'organization' is a full URL.",
+    type: "boolean",
+    default: true,
+  })
   .help()
   .parseSync();
 
@@ -63,11 +69,11 @@ const argv = yargs(getCliArgs())
  * Resolves the positional `organization` argument into a base URL and name.
  *
  * A bare organization name (e.g. `contoso`) targets the hosted Azure DevOps
- * service at `https://dev.azure.com/{organization}`. A full URL (e.g.
- * `https://ado.contoso.com/DefaultCollection`) targets an on-premises Azure
- * DevOps Server 2022+ / TFS collection and is used as-is.
+ * service at `https://dev.azure.com/{organization}` by default, unless
+ * --no-on-premises is passed. A full URL (e.g. `https://ado.contoso.com/DefaultCollection`)
+ * always targets an on-premises Azure DevOps Server 2022+ / TFS collection and is used as-is.
  */
-function resolveOrganization(organization: string): { orgName: string; orgUrl: string; isOnPremises: boolean } {
+function resolveOrganization(organization: string, onPremisesDefault: boolean): { orgName: string; orgUrl: string; isOnPremises: boolean } {
   if (/^https?:\/\//i.test(organization)) {
     const orgUrl = organization.replace(/\/+$/, "");
     let orgName = orgUrl;
@@ -81,10 +87,10 @@ function resolveOrganization(organization: string): { orgName: string; orgUrl: s
     }
     return { orgName, orgUrl, isOnPremises: true };
   }
-  return { orgName: organization, orgUrl: `https://dev.azure.com/${organization}`, isOnPremises: false };
+  return { orgName: organization, orgUrl: `https://dev.azure.com/${organization}`, isOnPremises: onPremisesDefault };
 }
 
-const resolvedOrg = resolveOrganization((argv.organization as string).trim());
+const resolvedOrg = resolveOrganization((argv.organization as string).trim(), argv.onPremises as boolean);
 export const orgName = resolvedOrg.orgName;
 export const orgUrl = resolvedOrg.orgUrl;
 export const isOnPremises = resolvedOrg.isOnPremises;
