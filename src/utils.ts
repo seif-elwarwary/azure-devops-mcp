@@ -199,6 +199,33 @@ export function getVsspsBaseUrl(serverUrl: string): string {
 }
 
 /**
+ * Builds the base URL for the Azure Artifacts (packaging/feeds) REST APIs.
+ *
+ * Mirrors {@link getAlmSearchBaseUrl}: the hosted service uses a dedicated
+ * `feeds` host while on-premises servers expose feeds under the collection URL.
+ *
+ * @param orgUrl The organization URL (hosted) or collection URL (on-premises).
+ * @returns The base URL to prefix `_apis/packaging/...` requests with.
+ */
+export function getFeedsBaseUrl(orgUrl: string): string {
+  try {
+    const u = new URL(orgUrl);
+    const host = u.hostname.toLowerCase();
+    if (host === "dev.azure.com" || host.endsWith(".dev.azure.com")) {
+      const org = u.pathname.split("/").filter(Boolean)[0] ?? "";
+      return `https://feeds.dev.azure.com/${org}`;
+    }
+    if (host.endsWith(".visualstudio.com")) {
+      return `${u.protocol}//${host.replace(".visualstudio.com", ".feeds.visualstudio.com")}`;
+    }
+  } catch {
+    // Not a parseable URL — fall through to the on-premises behavior below.
+  }
+  // On-premises Azure DevOps Server: feeds are served from the collection URL.
+  return orgUrl.replace(/\/+$/, "");
+}
+
+/**
  * Convert a Node.js ReadableStream to a string.
  * Shared utility for consistent stream handling across tools.
  */

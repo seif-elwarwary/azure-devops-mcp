@@ -15,6 +15,7 @@ export enum Domain {
   PROCESS = "process",
   GRAPH = "graph",
   SERVICE_HOOKS = "service-hooks",
+  FEEDS = "feeds",
   CORE = "core",
   REPOSITORIES = "repositories",
   SEARCH = "search",

@@ -292,6 +292,20 @@ This page lists all available tools provided by the local Azure DevOps MCP serve
 | [service_hook_write](#service_hook_write) | `update`             | Update a subscription            |
 | [service_hook_write](#service_hook_write) | `delete`             | Delete a subscription            |
 
+### Feeds
+
+> **Note:** Uses the Packaging REST API directly (no SDK client is available for it). Requires the Azure Artifacts extension, which is standard on Server 2019+.
+
+| Tool                      | Action          | Description              |
+| ------------------------- | --------------- | ------------------------ |
+| [feed](#feed)             | `list`          | List feeds               |
+| [feed](#feed)             | `get`           | Get a feed by ID or name |
+| [feed](#feed)             | `list_packages` | List packages in a feed  |
+| [feed](#feed)             | `get_package`   | Get a package by ID      |
+| [feed_write](#feed_write) | `create`        | Create a feed            |
+| [feed_write](#feed_write) | `update`        | Update a feed            |
+| [feed_write](#feed_write) | `delete`        | Delete a feed            |
+
 ### Advanced Security
 
 | Tool                                                                  | Description                                              |

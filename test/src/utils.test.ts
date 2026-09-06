@@ -9,6 +9,7 @@ import {
   getAlmSearchBaseUrl,
   getCliArgs,
   getEnumKeys,
+  getFeedsBaseUrl,
   getOrgFromUrl,
   getVsspsBaseUrl,
   mapStringArrayToEnum,
@@ -635,5 +636,21 @@ describe("getVsspsBaseUrl", () => {
   it("returns the collection URL unchanged for on-premises servers", () => {
     expect(getVsspsBaseUrl("https://ado.contoso.com/DefaultCollection")).toBe("https://ado.contoso.com/DefaultCollection");
     expect(getVsspsBaseUrl("https://ado.contoso.com:8080/tfs/DefaultCollection/")).toBe("https://ado.contoso.com:8080/tfs/DefaultCollection");
+  });
+});
+
+describe("getFeedsBaseUrl", () => {
+  it("uses the dedicated feeds host for the hosted service", () => {
+    expect(getFeedsBaseUrl("https://dev.azure.com/contoso")).toBe("https://feeds.dev.azure.com/contoso");
+    expect(getFeedsBaseUrl("https://dev.azure.com/contoso/")).toBe("https://feeds.dev.azure.com/contoso");
+  });
+
+  it("uses the feeds subdomain for legacy visualstudio.com URLs", () => {
+    expect(getFeedsBaseUrl("https://contoso.visualstudio.com")).toBe("https://contoso.feeds.visualstudio.com");
+  });
+
+  it("returns the collection URL unchanged for on-premises servers", () => {
+    expect(getFeedsBaseUrl("https://ado.contoso.com/DefaultCollection")).toBe("https://ado.contoso.com/DefaultCollection");
+    expect(getFeedsBaseUrl("https://ado.contoso.com:8080/tfs/DefaultCollection/")).toBe("https://ado.contoso.com:8080/tfs/DefaultCollection");
   });
 });
