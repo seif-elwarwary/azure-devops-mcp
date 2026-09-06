@@ -11,6 +11,7 @@ export enum Domain {
   ADVANCED_SECURITY = "advanced-security",
   PIPELINES = "pipelines",
   RELEASE = "release",
+  DISTRIBUTED_TASK = "distributedtask",
   CORE = "core",
   REPOSITORIES = "repositories",
   SEARCH = "search",

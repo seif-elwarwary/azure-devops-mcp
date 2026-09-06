@@ -168,6 +168,36 @@ This page lists all available tools provided by the local Azure DevOps MCP serve
 | [release_write](#release_write)                       | `create`      | Deploy a new Release from a definition      |
 | [release_write](#release_write)                       | `abandon`     | Abandon a Release                           |
 
+### DistributedTask
+
+| Tool                                              | Action   | Description                              |
+| ------------------------------------------------- | -------- | ---------------------------------------- |
+| [variable_group](#variable_group)                 | `list`   | List variable groups in a project        |
+| [variable_group](#variable_group)                 | `get`    | Get a variable group by ID               |
+| [variable_group_write](#variable_group_write)     | `create` | Create a variable group                  |
+| [variable_group_write](#variable_group_write)     | `update` | Update a variable group                  |
+| [variable_group_write](#variable_group_write)     | `delete` | Delete a variable group                  |
+| [task_group](#task_group)                         | `list`   | List task groups in a project            |
+| [task_group](#task_group)                         | `get`    | Get a task group by ID                   |
+| [task_group_write](#task_group_write)             | `create` | Create a task group                      |
+| [task_group_write](#task_group_write)             | `update` | Update a task group                      |
+| [task_group_write](#task_group_write)             | `delete` | Delete a task group                      |
+| [secure_file](#secure_file)                       | `list`   | List secure files in a project           |
+| [secure_file](#secure_file)                       | `get`    | Get secure file metadata by ID           |
+| [secure_file_write](#secure_file_write)           | `upload` | Upload a secure file                     |
+| [secure_file_write](#secure_file_write)           | `delete` | Delete a secure file                     |
+| [deployment_group](#deployment_group)             | `list`   | List deployment groups in a project      |
+| [deployment_group](#deployment_group)             | `get`    | Get a deployment group by ID             |
+| [deployment_group_write](#deployment_group_write) | `create` | Create a deployment group                |
+| [deployment_group_write](#deployment_group_write) | `delete` | Delete a deployment group                |
+| [agent_pool](#agent_pool)                         | `list`   | List organization-level agent pools      |
+| [agent_pool](#agent_pool)                         | `get`    | Get an agent pool by ID                  |
+| [agent_pool_write](#agent_pool_write)             | `create` | Create an agent pool                     |
+| [agent_pool_write](#agent_pool_write)             | `delete` | Delete an agent pool                     |
+| [agent_queue](#agent_queue)                       |          | List project-level agent queues          |
+| [agent_queue_write](#agent_queue_write)           | `create` | Create an agent queue referencing a pool |
+| [agent_queue_write](#agent_queue_write)           | `delete` | Delete an agent queue                    |
+
 ### Test Plans
 
 > **Note:** The test plan tools are being aligned with the [Azure DevOps remote MCP server](https://learn.microsoft.com/en-us/azure/devops/mcp-server/remote-mcp-server?view=azure-devops#test-plans) tool structure.
